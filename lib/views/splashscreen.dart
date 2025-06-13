@@ -23,17 +23,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFF7E57C2),
+    return Scaffold(
+      backgroundColor: const Color(0xFF7E57C2),
       body: Center(
-        child: Text(
-          'Gadgetify',
-          style: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 2,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/gadgetify_logo.png", height: 250),
+            const SizedBox(height: 30),
+            const CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 3,
+            ),
+          ],
         ),
       ),
     );
