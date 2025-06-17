@@ -13,19 +13,18 @@ class GadgetApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gadget Store',
+      title: 'Gadgetify',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.indigo,
         scaffoldBackgroundColor: Colors.grey[100],
-        fontFamily: 'Poppins', // A modern and clean font
+        fontFamily: 'Poppins',
       ),
       home: const DashboardScreen(),
     );
   }
 }
 
-// The main dashboard screen
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -36,7 +35,6 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  // Handler for bottom navigation bar taps
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
