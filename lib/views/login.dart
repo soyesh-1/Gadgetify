@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dashboard.dart'; // Make sure this file exists
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,13 +18,24 @@ class _LoginState extends State<Login> {
     String email = _emailController.text.trim();
     String password = _passwordController.text;
 
-    if (email.isNotEmpty && password.isNotEmpty) {
-      debugPrint('Logging in with: $email / $password');
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login successful')));
-    } else {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    if (email == 'soyesh@gmail.com' && password == 'soyesh123') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful')),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid credentials')),
       );
     }
   }
