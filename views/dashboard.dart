@@ -242,17 +242,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final products = [
       {
         'name': 'Smart Watch X',
-        'price': '\$299',
+        'price': 'Rs.40,000',
         'image': 'https://placehold.co/300x300/F0F0F0/333333?text=Watch+X',
       },
       {
         'name': 'Pro Headphones',
-        'price': '\$199',
+        'price': 'Rs.12,000',
         'image': 'https://placehold.co/300x300/E0E0E0/333333?text=Headphones',
       },
       {
         'name': 'VR Headset',
-        'price': '\$499',
+        'price': '40,000',
         'image': 'https://placehold.co/300x300/D0D0D0/333333?text=VR',
       },
     ];
@@ -275,22 +275,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final products = [
       {
         'name': 'Gaming Mouse',
-        'price': '\$79',
+        'price': '\Rs.1500',
         'image': 'https://placehold.co/300x300/C0C0C0/333333?text=Mouse',
       },
       {
         'name': '4K Drone',
-        'price': '\$899',
+        'price': 'RS.150,000',
         'image': 'https://placehold.co/300x300/B0B0B0/333333?text=Drone',
       },
       {
         'name': 'Tablet Pro',
-        'price': '\$649',
+        'price': 'Rs.70,000',
         'image': 'https://placehold.co/300x300/A0A0A0/333333?text=Tablet',
       },
       {
         'name': 'Smart Speaker',
-        'price': '\$129',
+        'price': 'Rs.20,000',
         'image': 'https://placehold.co/300x300/909090/333333?text=Speaker',
       },
     ];
