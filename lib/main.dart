@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gadgetify/features/splash/presentation/view/splash_view.dart';
+import 'package:gadgetify/features/splash/presentation/view_model/splash_cubit.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
- // We will create this later
+// We will create this later
 
 Future<void> main() async {
   // Ensure that Flutter widgets are initialized.
