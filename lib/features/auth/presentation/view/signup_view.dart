@@ -60,14 +60,16 @@ class _SignUpViewState extends State<SignUpView> {
         listener: (context, state) {
           if (state is AuthSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Sign Up successful! Please log in.')),
+              const SnackBar(
+                content: Text('Sign Up successful! Please log in.'),
+              ),
             );
             // Navigate back to the Login screen on success
             Navigator.of(context).pop();
           } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         child: Container(
@@ -83,9 +85,19 @@ class _SignUpViewState extends State<SignUpView> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const Text('Create Account', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const Text(
+                    'Create Account',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                   const SizedBox(height: 10),
-                  const Text("Let’s get started", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                  const Text(
+                    "Let’s get started",
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
                   const SizedBox(height: 40),
                   TextField(
                     controller: _emailController,
@@ -100,8 +112,16 @@ class _SignUpViewState extends State<SignUpView> {
                     decoration: _buildInputDecoration(
                       'Password',
                       icon: IconButton(
-                        icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: Colors.white70),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.white70,
+                        ),
+                        onPressed:
+                            () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                       ),
                     ),
                   ),
@@ -113,11 +133,89 @@ class _SignUpViewState extends State<SignUpView> {
                     decoration: _buildInputDecoration(
                       'Confirm Password',
                       icon: IconButton(
-                        icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility, color: Colors.white70),
-                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.white70,
+                        ),
+                        onPressed:
+                            () => setState(
+                              () =>
+                                  _obscureConfirmPassword =
+                                      !_obscureConfirmPassword,
+                            ),
                       ),
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        if (state is AuthLoading) {
+                          return ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const CircularProgressIndicator(
+                              color: Colors.deepPurple,
+                            ),
+                          );
+                        }
+                        return ElevatedButton(
+                          onPressed: () {
+                            context.read<AuthCubit>().signUp(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                              confirmPassword: _confirmPasswordController.text,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text('Sign Up'),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // ... [Social buttons and other widgets] ...
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Already have an account? ",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      GestureDetector(
+                        onTap:
+                            () => Navigator.pop(
+                              context,
+                            ), // Go back to the previous screen (Login)
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -125,4 +223,3 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 }
-
