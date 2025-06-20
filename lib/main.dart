@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:gadgetify/features/splash/presentation/view/splash_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:gadgetify/app/router/app_router.dart';
+import 'package:gadgetify/app/service_locator/service_locator.dart';
+import 'package:gadgetify/features/auth/data/model/auth_hive_model.dart';
+import 'package:gadgetify/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:gadgetify/features/splash/presentation/view_model/splash_cubit.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:provider/provider.dart';
-// We will create this later
 
 Future<void> main() async {
-  // Ensure that Flutter widgets are initialized.
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Hive for local storage
   await Hive.initFlutter();
+
+  // Register Hive Adapters
+  Hive.registerAdapter(AuthHiveModelAdapter());
+
+  // Setup dependency injection
+  setupDependencies();
 
   runApp(const GadgetApp());
 }
@@ -20,24 +25,18 @@ class GadgetApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      // Register all your Cubits here for dependency injection
+    return MultiBlocProvider(
       providers: [
-        Provider<SplashCubit>(create: (_) => SplashCubit()),
-        // Provider<AuthCubit>(create: (_) => AuthCubit()), // Example for later
+        BlocProvider<SplashCubit>(create: (_) => SplashCubit()),
+        // Use the service locator to create the AuthCubit instance
+        BlocProvider<AuthCubit>(create: (_) => sl<AuthCubit>()),
       ],
       child: MaterialApp(
         title: 'Gadgetify',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-          scaffoldBackgroundColor: Colors.grey[100],
-          fontFamily: 'Poppins',
-        ),
-        // Start with the SplashView
-        home: const SplashView(),
-        // We will define the routes later in the AppRouter class
-        // onGenerateRoute: AppRouter.onGenerateRoute,
+        theme: ThemeData(/* Your theme data */),
+        initialRoute: AppRouter.splashRoute,
+        onGenerateRoute: AppRouter.onGenerateRoute,
       ),
     );
   }
