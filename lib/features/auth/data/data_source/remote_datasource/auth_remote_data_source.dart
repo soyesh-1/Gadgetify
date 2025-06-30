@@ -7,37 +7,31 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this._dio);
 
-  // In a real app, this would return a user object or a token from the API.
-  // For now, we simulate a successful API call.
   Future<void> signup(AuthEntity user) async {
     try {
+      // CORRECTED URL: Removed the "/auth" part to match your API route.
       await _dio.post(
-        'http://10.0.2.2:5005/api/auth/signup',
+        'http://10.0.2.2:5005/api/signup',
         data: {"email": user.email, "password": user.password},
       );
     } on DioException catch (e) {
-      // You can handle specific Dio errors here (e.g., 400, 401, 500)
       throw Exception('API signup failed: ${e.message}');
     }
   }
 
-  // In a real app, this would return a user object or an auth token.
-  // For this example, we'll return a bool indicating success.
   Future<bool> login(String email, String password) async {
     try {
+      // CORRECTED URL: Removed the "/auth" part to match your API route.
       final response = await _dio.post(
-        'http://10.0.2.2:5005/api/auth/login',
+        'http://10.0.2.2:5005/api/login',
         data: {"email": email, "password": password},
       );
-      // Assuming a successful login returns a 200 status code
+
       if (response.statusCode == 200) {
-        // You would typically get a token from the response body here.
-        // For example: String token = response.data['token'];
         return true;
       }
       return false;
     } on DioException {
-      // If the API returns an error (like 401 Unauthorized), Dio throws an exception.
       return false;
     }
   }
