@@ -11,9 +11,9 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
     required SignUpUseCase signUpUseCase,
     required LoginUseCase loginUseCase,
-  })  : _signUpUseCase = signUpUseCase,
-        _loginUseCase = loginUseCase,
-        super(AuthInitial());
+  }) : _signUpUseCase = signUpUseCase,
+       _loginUseCase = loginUseCase,
+       super(AuthInitial());
 
   Future<void> signUp({
     required String email,
@@ -25,8 +25,8 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthFailure('Passwords do not match'));
       return;
     }
-    
-    final user = AuthEntity(email: email, password: password);
+
+    final user = AuthEntity(id: null, email: email, password: password);
     final result = await _signUpUseCase(user);
 
     result.fold(
@@ -35,12 +35,13 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
-    final result = await _loginUseCase(email: email, password: password);
+    // We now create an instance of LoginParams and pass it to the use case.
+    final result = await _loginUseCase(
+      LoginParams(email: email, password: password),
+    );
+    // ------------------------------------
 
     result.fold(
       (failure) => emit(AuthFailure(failure.error)),
