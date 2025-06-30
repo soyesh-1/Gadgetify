@@ -12,7 +12,7 @@ class AuthRemoteDataSource {
   Future<void> signup(AuthEntity user) async {
     try {
       await _dio.post(
-        'https://your-api.com/api/v1/auth/signup', // <-- REPLACE WITH YOUR API ENDPOINT
+        'http://10.0.2.2:5005/api/auth/signup',
         data: {"email": user.email, "password": user.password},
       );
     } on DioException catch (e) {
@@ -26,7 +26,7 @@ class AuthRemoteDataSource {
   Future<bool> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        'https://your-api.com/api/v1/auth/login', // <-- REPLACE WITH YOUR API ENDPOINT
+        'http://10.0.2.2:5005/api/auth/login',
         data: {"email": email, "password": password},
       );
       // Assuming a successful login returns a 200 status code
