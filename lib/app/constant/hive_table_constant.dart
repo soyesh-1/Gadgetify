@@ -1,6 +1,6 @@
 class HiveTableConstant {
-  HiveTableConstant._(); // Private constructor
-
+  HiveTableConstant._();
+  
   static const int userTableId = 0;
   static const String userBox = 'userBox';
 }
