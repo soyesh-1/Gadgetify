@@ -14,39 +14,32 @@ class AuthRemoteDataSource {
   }
 
   Future<void> signup(AuthEntity user) async {
-    final signupUrl = '$_baseUrl/api/auth/signup';
     try {
       await _dio.post(
-        signupUrl,
+        '$_baseUrl/api/auth/signup',
         data: {"email": user.email, "password": user.password},
       );
     } on DioException catch (e) {
-      String errorMessage =
-          'API signup failed. Please check your connection and try again.';
-      if (e.type == DioExceptionType.connectionError) {
-        errorMessage =
-            'Connection Error: Could not connect to the server at $signupUrl. Please ensure the server is running, CORS is enabled, and your device has network access.';
-      } else if (e.response != null) {
-        errorMessage =
-            'Server Error: ${e.response?.statusCode} - ${e.response?.data['message'] ?? 'An unknown error occurred.'}';
-      }
-      if (kDebugMode) {
-        print(errorMessage);
-      }
-      throw Exception(errorMessage);
+      throw Exception('API signup failed: ${e.message}');
     }
   }
 
-  Future<bool> login(String email, String password) async {
-    final loginUrl = '$_baseUrl/api/auth/login';
+  // UPDATED: This now returns a String (the token) on success.
+  Future<String> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        loginUrl,
+        '$_baseUrl/api/auth/login',
         data: {"email": email, "password": password},
       );
-      return response.statusCode == 200;
+
+      if (response.statusCode == 200 && response.data['token'] != null) {
+        // In a real app, you get the token from the response.
+        return response.data['token'];
+      } else {
+        throw Exception('Login failed: Invalid response from server.');
+      }
     } on DioException {
-      return false;
+      throw Exception('Login failed: Could not connect to the server.');
     }
   }
 }

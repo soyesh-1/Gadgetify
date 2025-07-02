@@ -15,11 +15,21 @@ class AuthLocalDataSource {
       final user = users.firstWhere(
         (user) => user.email == email && user.password == password,
       );
-      await box.close();
       return user;
     } catch (e) {
-      await box.close();
       return null;
     }
+  }
+
+  // NEW: Save the auth token to a separate session box.
+  Future<void> saveToken(String token) async {
+    final box = await Hive.openBox(HiveTableConstant.sessionBox);
+    await box.put('token', token);
+  }
+
+  // NEW: Get the auth token from the session box.
+  Future<String?> getToken() async {
+    final box = await Hive.openBox(HiveTableConstant.sessionBox);
+    return box.get('token');
   }
 }

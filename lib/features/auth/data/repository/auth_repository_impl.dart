@@ -20,6 +20,7 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   Future<Either<Failure, void>> signup({required AuthEntity user}) async {
+    // Signup logic remains the same: online-only for creating the account.
     if (await _networkInfo.isConnected) {
       try {
         await _remoteDataSource.signup(user);
@@ -41,16 +42,16 @@ class AuthRepositoryImpl implements IAuthRepository {
   }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final isSuccess = await _remoteDataSource.login(email, password);
-        if (isSuccess) {
-          return const Right(true);
-        } else {
-          return Left(Failure(error: 'Invalid credentials from API.'));
-        }
+        // Try to log in using the API.
+        final token = await _remoteDataSource.login(email, password);
+        // If remote login is successful, save the token to Hive.
+        await _localDataSource.saveToken(token);
+        return const Right(true);
       } catch (e) {
         return Left(Failure(error: e.toString()));
       }
     } else {
+      // Offline login logic remains the same.
       try {
         final user = await _localDataSource.login(email, password);
         if (user != null) {
