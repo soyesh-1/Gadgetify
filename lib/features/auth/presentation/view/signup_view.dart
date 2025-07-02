@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gadgetify/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:gadgetify/features/auth/presentation/view_model/auth_state.dart';
 
-import '../view_model/auth_cubit.dart';
-import '../view_model/auth_state.dart';
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
   @override
@@ -25,8 +25,17 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   InputDecoration _buildInputDecoration(String hintText, {Widget? icon}) {
-    /* Omitted for brevity */
-    return InputDecoration(hintText: hintText, suffixIcon: icon);
+    return InputDecoration(
+      filled: true,
+      fillColor: Colors.white.withOpacity(0.2),
+      hintText: hintText,
+      hintStyle: const TextStyle(color: Colors.white70),
+      suffixIcon: icon,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+    );
   }
 
   @override
@@ -34,13 +43,13 @@ class _SignUpViewState extends State<SignUpView> {
     return Scaffold(
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
+          if (state is AuthSuccess && !state.isLogin) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Sign Up successful! Please log in.'),
               ),
             );
-            Navigator.pop(context); // Go back to login screen
+            Navigator.pop(context);
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(
               context,

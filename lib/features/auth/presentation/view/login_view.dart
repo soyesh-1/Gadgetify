@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gadgetify/app/router/app_router.dart';
 import 'package:gadgetify/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:gadgetify/features/auth/presentation/view_model/auth_state.dart';
@@ -23,25 +22,12 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  Widget _socialButton({required IconData icon}) {
-    return Container(
-      width: 60,
-      height: 45,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Center(child: FaIcon(icon, color: Colors.black)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // The BlocProvider is removed from here. The BlocListener now becomes the direct child of the Scaffold's body.
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
+          if (state is AuthSuccess && state.isLogin) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text('Login successful')));
@@ -136,7 +122,6 @@ class _LoginViewState extends State<LoginView> {
                         }
                         return ElevatedButton(
                           onPressed: () {
-                            // This call will now correctly find the AuthCubit from the MultiBlocProvider.
                             context.read<AuthCubit>().login(
                               email: _emailController.text,
                               password: _passwordController.text,
