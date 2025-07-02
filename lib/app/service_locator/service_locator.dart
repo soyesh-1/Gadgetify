@@ -10,6 +10,7 @@ import 'package:gadgetify/features/auth/domain/use_case/login_use_case.dart';
 import 'package:gadgetify/features/auth/domain/use_case/signup_use_case.dart';
 import 'package:gadgetify/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:gadgetify/features/home/presentation/view_model/home_cubit.dart';
+import 'package:gadgetify/features/splash/presentation/view_model/splash_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -24,7 +25,6 @@ void setupDependencies() {
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSource(sl<Dio>()),
   );
-
   sl.registerLazySingleton<IAuthRepository>(
     () => AuthRepositoryImpl(
       sl<AuthLocalDataSource>(),
@@ -32,14 +32,12 @@ void setupDependencies() {
       sl<INetworkInfo>(),
     ),
   );
-
   sl.registerLazySingleton<SignUpUseCase>(
     () => SignUpUseCase(sl<IAuthRepository>()),
   );
   sl.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(sl<IAuthRepository>()),
   );
-
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
       signUpUseCase: sl<SignUpUseCase>(),
@@ -49,4 +47,7 @@ void setupDependencies() {
 
   // Home Feature
   sl.registerFactory<HomeCubit>(() => HomeCubit());
+
+  // Splash Feature
+  sl.registerFactory<SplashCubit>(() => SplashCubit());
 }
