@@ -16,6 +16,7 @@ class AuthCubit extends Cubit<AuthState> {
        super(AuthInitial());
 
   Future<void> signUp({
+    required String name, // <-- ADDED
     required String email,
     required String password,
     required String confirmPassword,
@@ -26,7 +27,8 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    final user = AuthEntity(email: email, password: password);
+    // Pass the name when creating the entity
+    final user = AuthEntity(name: name, email: email, password: password);
     final result = await _signUpUseCase(user);
 
     result.fold(
