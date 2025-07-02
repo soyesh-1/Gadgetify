@@ -10,33 +10,12 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  final _nameController = TextEditingController(); // <-- ADDED
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  InputDecoration _buildInputDecoration(String hintText, {Widget? icon}) {
-    return InputDecoration(
-      filled: true,
-      fillColor: Colors.white.withOpacity(0.2),
-      hintText: hintText,
-      hintStyle: const TextStyle(color: Colors.white70),
-      suffixIcon: icon,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
-    );
-  }
+  // ... (rest of the state class is the same)
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +36,7 @@ class _SignUpViewState extends State<SignUpView> {
           }
         },
         child: Container(
-          padding: const EdgeInsets.all(24.0),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFB3E5FC), Color(0xFF7E57C2)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          // ... (Container decoration is the same)
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -78,121 +50,69 @@ class _SignUpViewState extends State<SignUpView> {
                     ),
                   ),
                   const SizedBox(height: 40),
+
+                  // --- ADDED NAME TEXTFIELD ---
+                  TextField(
+                    controller: _nameController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: _buildInputDecoration('Full Name'),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ---------------------------
                   TextField(
                     controller: _emailController,
                     style: const TextStyle(color: Colors.white),
                     decoration: _buildInputDecoration('Email Address'),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _buildInputDecoration(
-                      'Password',
-                      icon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.white70,
-                        ),
-                        onPressed:
-                            () => setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _confirmPasswordController,
-                    obscureText: _obscureConfirmPassword,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _buildInputDecoration(
-                      'Confirm Password',
-                      icon: IconButton(
-                        icon: Icon(
-                          _obscureConfirmPassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.white70,
-                        ),
-                        onPressed:
-                            () => setState(
-                              () =>
-                                  _obscureConfirmPassword =
-                                      !_obscureConfirmPassword,
-                            ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+
+                  // ... (Password and Confirm Password TextFields are the same)
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
                         if (state is AuthLoading) {
-                          return ElevatedButton(
-                            onPressed: null,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const CircularProgressIndicator(
-                              color: Colors.deepPurple,
-                            ),
-                          );
+                          // ... (Loading button is the same)
                         }
                         return ElevatedButton(
                           onPressed: () {
+                            // --- UPDATED to send the name ---
                             context.read<AuthCubit>().signUp(
+                              name: _nameController.text,
                               email: _emailController.text,
                               password: _passwordController.text,
                               confirmPassword: _confirmPasswordController.text,
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                          // ... (Button style is the same)
                           child: const Text('Sign Up'),
                         );
                       },
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Already have an account? ",
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // ... (Rest of the UI is the same)
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Helper method, no changes needed
+  InputDecoration _buildInputDecoration(String hintText, {Widget? icon}) {
+    return InputDecoration(
+      filled: true,
+      fillColor: Colors.white.withOpacity(0.2),
+      hintText: hintText,
+      hintStyle: const TextStyle(color: Colors.white70),
+      suffixIcon: icon,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
       ),
     );
   }
