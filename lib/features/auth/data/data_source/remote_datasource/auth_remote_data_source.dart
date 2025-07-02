@@ -16,7 +16,7 @@ class AuthRemoteDataSource {
   Future<void> signup(AuthEntity user) async {
     try {
       await _dio.post(
-        '$_baseUrl/api/auth/signup',
+        '$_baseUrl/api/auth/register',
         data: {"email": user.email, "password": user.password},
       );
     } on DioException catch (e) {
