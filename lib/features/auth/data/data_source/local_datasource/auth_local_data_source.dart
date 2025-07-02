@@ -11,7 +11,6 @@ class AuthLocalDataSource {
   Future<AuthHiveModel?> login(String email, String password) async {
     final box = await Hive.openBox<AuthHiveModel>(HiveTableConstant.userBox);
     final users = box.values.toList();
-
     try {
       final user = users.firstWhere(
         (user) => user.email == email && user.password == password,

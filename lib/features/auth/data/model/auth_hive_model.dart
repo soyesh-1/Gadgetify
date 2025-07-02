@@ -15,19 +15,17 @@ class AuthHiveModel extends Equatable {
   @HiveField(2)
   final String password;
 
-  AuthHiveModel({
-    String? userId,
-    required this.email,
-    required this.password,
-  }) : userId = userId ?? const Uuid().v4();
+  AuthHiveModel({String? userId, required this.email, required this.password})
+    : userId = userId ?? const Uuid().v4();
 
-  AuthEntity toEntity() => AuthEntity(id: userId, email: email, password: password);
+  AuthEntity toEntity() =>
+      AuthEntity(id: userId, email: email, password: password);
 
   factory AuthHiveModel.fromEntity(AuthEntity entity) => AuthHiveModel(
-        userId: entity.id,
-        email: entity.email,
-        password: entity.password,
-      );
+    userId: entity.id,
+    email: entity.email,
+    password: entity.password,
+  );
 
   @override
   List<Object?> get props => [userId, email, password];
