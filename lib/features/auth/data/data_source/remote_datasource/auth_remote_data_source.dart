@@ -14,32 +14,37 @@ class AuthRemoteDataSource {
   }
 
   Future<void> signup(AuthEntity user) async {
+    final signupUrl = '$_baseUrl/api/auth/register';
     try {
       await _dio.post(
-        '$_baseUrl/api/auth/register',
-        data: {"email": user.email, "password": user.password},
+        signupUrl,
+        data: {
+          "name": user.name,
+          "email": user.email,
+          "password": user.password,
+        },
       );
     } on DioException catch (e) {
-      throw Exception('API signup failed: ${e.message}');
+      // Use the specific error message from your backend if it exists.
+      throw Exception(e.response?.data['msg'] ?? 'API signup failed.');
     }
   }
 
-  // UPDATED: This now returns a String (the token) on success.
   Future<String> login(String email, String password) async {
+    final loginUrl = '$_baseUrl/api/auth/login';
     try {
       final response = await _dio.post(
-        '$_baseUrl/api/auth/login',
+        loginUrl,
         data: {"email": email, "password": password},
       );
 
       if (response.statusCode == 200 && response.data['token'] != null) {
-        // In a real app, you get the token from the response.
         return response.data['token'];
       } else {
         throw Exception('Login failed: Invalid response from server.');
       }
-    } on DioException {
-      throw Exception('Login failed: Could not connect to the server.');
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['msg'] ?? 'Login failed.');
     }
   }
 }
