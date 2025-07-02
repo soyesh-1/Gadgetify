@@ -7,9 +7,6 @@ class SplashCubit extends Cubit<SplashState> {
 
   void checkLoginStatus() {
     Timer(const Duration(seconds: 2), () {
-      // Future logic: Check Hive for a user session token.
-      // If token exists, emit(SplashNavigateToHome());
-      // For now, we always navigate to login.
       emit(SplashNavigateToLogin());
     });
   }
