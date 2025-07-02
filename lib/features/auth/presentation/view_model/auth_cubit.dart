@@ -26,26 +26,24 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    final user = AuthEntity(id: null, email: email, password: password);
+    final user = AuthEntity(email: email, password: password);
     final result = await _signUpUseCase(user);
 
     result.fold(
       (failure) => emit(AuthFailure(failure.error)),
-      (_) => emit(AuthSuccess()),
+      (_) => emit(const AuthSuccess(isLogin: false)),
     );
   }
 
   Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
-    // We now create an instance of LoginParams and pass it to the use case.
     final result = await _loginUseCase(
       LoginParams(email: email, password: password),
     );
-    // ------------------------------------
 
     result.fold(
       (failure) => emit(AuthFailure(failure.error)),
-      (isSuccess) => emit(AuthSuccess()),
+      (isSuccess) => emit(const AuthSuccess(isLogin: true)),
     );
   }
 }
