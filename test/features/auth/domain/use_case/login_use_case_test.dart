@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gadgetify/core/error/failure.dart';
 import 'package:gadgetify/features/auth/domain/repository/auth_repository.dart';
 import 'package:gadgetify/features/auth/domain/use_case/login_use_case.dart';
 import 'package:mocktail/mocktail.dart';
