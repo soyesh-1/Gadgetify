@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gadgetify/core/error/failure.dart';
 import 'package:gadgetify/features/auth/domain/entity/auth_entity.dart';
 import 'package:gadgetify/features/auth/domain/use_case/login_use_case.dart';
 import 'package:gadgetify/features/auth/domain/use_case/signup_use_case.dart';
