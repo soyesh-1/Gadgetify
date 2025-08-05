@@ -1,75 +1,65 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'home_state.dart';
+import 'package:gadgetify/features/home/domain/entity/category_entity.dart';
+import 'package:gadgetify/features/home/presentation/view_model/home_state.dart';
+import 'package:gadgetify/features/products/domain/use_case/get_all_products_use_case.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(const HomeState());
+  final GetAllProductsUseCase _getAllProductsUseCase;
+
+  HomeCubit(this._getAllProductsUseCase) : super(const HomeState());
 
   void changeTab(int index) {
     emit(state.copyWith(selectedIndex: index));
   }
 
-  // This method simulates loading the data for the home screen.
-  void loadHomeData() {
+  void getAllData() {
+    getAllProducts();
+    getCategories();
+  }
+
+  Future<void> getAllProducts() async {
     emit(state.copyWith(isLoading: true));
+    final result = await _getAllProductsUseCase();
 
-    // In the future, this data will come from a UseCase calling a Repository.
-    final categories = [
-      {'icon': CupertinoIcons.device_phone_portrait, 'name': 'Phones'},
-      {'icon': CupertinoIcons.device_laptop, 'name': 'Laptops'},
-      {'icon': CupertinoIcons.headphones, 'name': 'Audio'},
-      {'icon': CupertinoIcons.game_controller, 'name': 'Gaming'},
-      {'icon': CupertinoIcons.camera, 'name': 'Cameras'},
-    ];
-
-    final specialForYou = [
-      {
-        'name': 'Smart Watch X',
-        'price': 'Rs.5000',
-        'image': 'https://placehold.co/300x300/F0F0F0/333333?text=Watch+X',
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isLoading: false, error: failure.error));
       },
-      {
-        'name': 'Pro Headphones',
-        'price': 'RS. 15000',
-        'image': 'https://placehold.co/300x300/E0E0E0/333333?text=Headphones',
+      (products) {
+        emit(state.copyWith(isLoading: false, products: products));
       },
-      {
-        'name': 'VR Headset',
-        'price': 'Rs. 60000',
-        'image': 'https://placehold.co/300x300/D0D0D0/333333?text=VR',
-      },
-    ];
-
-    final popularProducts = [
-      {
-        'name': 'Gaming Mouse',
-        'price': 'Rs. 9000',
-        'image': 'https://placehold.co/300x300/C0C0C0/333333?text=Mouse',
-      },
-      {
-        'name': '4K Drone',
-        'price': 'Rs. 220,000',
-        'image': 'https://placehold.co/300x300/B0B0B0/333333?text=Drone',
-      },
-      {
-        'name': 'Tablet Pro',
-        'price': 'Rs. 65000',
-        'image': 'https://placehold.co/300x300/A0A0A0/333333?text=Tablet',
-      },
-      {
-        'name': 'Smart Speaker',
-        'price': 'Rs. 16,000',
-        'image': 'https://placehold.co/300x300/909090/333333?text=Speaker',
-      },
-    ];
-
-    emit(
-      state.copyWith(
-        isLoading: false,
-        categories: categories,
-        specialForYouProducts: specialForYou,
-        popularProducts: popularProducts,
-      ),
     );
+  }
+
+  void getCategories() {
+    final List<CategoryEntity> categories = [
+      const CategoryEntity(
+        id: '1',
+        name: 'Mobiles',
+        icon: CupertinoIcons.device_phone_portrait,
+      ),
+      const CategoryEntity(
+        id: '2',
+        name: 'Laptops',
+        icon: CupertinoIcons.device_laptop,
+      ),
+      const CategoryEntity(
+        id: '3',
+        name: 'Headphones',
+        icon: CupertinoIcons.headphones,
+      ),
+      const CategoryEntity(
+        id: '4',
+        name: 'Gaming',
+        icon: CupertinoIcons.game_controller,
+      ),
+      const CategoryEntity(
+        id: '5',
+        name: 'Accessories',
+        icon: CupertinoIcons.battery_25_percent,
+      ),
+    ];
+    emit(state.copyWith(categories: categories));
   }
 }

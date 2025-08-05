@@ -5,41 +5,47 @@ import 'package:gadgetify/features/auth/domain/repository/auth_repository.dart';
 import 'package:gadgetify/features/auth/domain/use_case/signup_use_case.dart';
 import 'package:mocktail/mocktail.dart';
 
-// Re-use the same mock class
+// Create a mock class for the repository dependency.
 class MockAuthRepository extends Mock implements IAuthRepository {}
+
+// --- THIS IS THE FIX (Part 1) ---
+// Create a "Fake" class that mocktail can use as a placeholder.
+class FakeAuthEntity extends Fake implements AuthEntity {}
 
 void main() {
   late SignUpUseCase signUpUseCase;
   late MockAuthRepository mockAuthRepository;
+
+  // --- THIS IS THE FIX (Part 2) ---
+  // Use setUpAll to register the fallback value once for all tests in this file.
+  setUpAll(() {
+    registerFallbackValue(FakeAuthEntity());
+  });
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
     signUpUseCase = SignUpUseCase(mockAuthRepository);
   });
 
-  const authEntity = AuthEntity(
+  const tAuthEntity = AuthEntity(
     name: 'Test User',
     email: 'test@test.com',
     password: 'password',
   );
 
-  group('SignUpUseCase', () {
-    test('should call authRepository.signup with correct entity', () async {
-      // Arrange: Stub the repository's signup method to return success (Right(null))
-      // We use `any()` because comparing custom objects can be tricky without equatable setup.
-      when(
-        () => mockAuthRepository.signup(user: any(named: 'user')),
-      ).thenAnswer((_) async => const Right(null));
+  test('should call authRepository.signup with correct entity', () async {
+    // Arrange: Stub the repository's signup method to return success.
+    // The `any(named: 'user')` will now work because we registered a fallback.
+    when(
+      () => mockAuthRepository.signup(user: any(named: 'user')),
+    ).thenAnswer((_) async => const Right(null));
 
-      // Act: Execute the use case
-      final result = await signUpUseCase(authEntity);
+    // Act
+    final result = await signUpUseCase(tAuthEntity);
 
-      // Assert: Expect a successful result
-      expect(result, const Right(null));
-
-      // Verify: Ensure the repository's signup method was called once
-      verify(() => mockAuthRepository.signup(user: authEntity)).called(1);
-      verifyNoMoreInteractions(mockAuthRepository);
-    });
+    // Assert
+    expect(result, const Right(null));
+    verify(() => mockAuthRepository.signup(user: tAuthEntity)).called(1);
+    verifyNoMoreInteractions(mockAuthRepository);
   });
 }

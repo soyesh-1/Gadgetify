@@ -5,7 +5,7 @@ import 'package:gadgetify/features/auth/data/data_source/local_datasource/auth_l
 import 'splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
-  SplashCubit() : super(SplashInitial());
+  SplashCubit(AuthLocalDataSource authLocalDataSource) : super(SplashInitial());
 
   void checkLoginStatus() {
     Timer(const Duration(seconds: 2), () async {

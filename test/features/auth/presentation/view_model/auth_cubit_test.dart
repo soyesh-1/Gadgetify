@@ -13,10 +13,22 @@ class MockSignUpUseCase extends Mock implements SignUpUseCase {}
 
 class MockLoginUseCase extends Mock implements LoginUseCase {}
 
+// Create dummy "Fake" classes for your custom types so mocktail can work with them.
+class FakeLoginParams extends Fake implements LoginParams {}
+
+class FakeAuthEntity extends Fake implements AuthEntity {}
+
 void main() {
   late AuthCubit authCubit;
   late MockSignUpUseCase mockSignUpUseCase;
   late MockLoginUseCase mockLoginUseCase;
+
+  // Register fallback values once for all tests in this file.
+  // This is the key to fixing the 'Bad state' error.
+  setUpAll(() {
+    registerFallbackValue(FakeLoginParams());
+    registerFallbackValue(FakeAuthEntity());
+  });
 
   setUp(() {
     mockSignUpUseCase = MockSignUpUseCase();
@@ -25,25 +37,20 @@ void main() {
       signUpUseCase: mockSignUpUseCase,
       loginUseCase: mockLoginUseCase,
     );
-    // Register a fallback value for AuthEntity for mocktail to work with it.
-    registerFallbackValue(const AuthEntity(name: '', email: '', password: ''));
   });
 
-  // Test Group for all AuthCubit tests
   group('AuthCubit', () {
     // Test 1: Successful Login
     blocTest<AuthCubit, AuthState>(
       'emits [AuthLoading, AuthSuccess] when login is successful',
       build: () {
-        // Arrange: When the login use case is called with any parameters, return success.
+        // Arrange: The `any()` matcher will now work correctly because we registered a fallback.
         when(
           () => mockLoginUseCase(any()),
         ).thenAnswer((_) async => const Right(true));
         return authCubit;
       },
-      // Act: Call the login method on the cubit.
       act: (cubit) => cubit.login(email: 'test@test.com', password: 'password'),
-      // Assert: Expect this exact sequence of states.
       expect:
           () => <AuthState>[AuthLoading(), const AuthSuccess(isLogin: true)],
     );
@@ -52,7 +59,6 @@ void main() {
     blocTest<AuthCubit, AuthState>(
       'emits [AuthLoading, AuthFailure] when signup passwords do not match',
       build: () => authCubit,
-      // Act: Call signUp with mismatched passwords.
       act:
           (cubit) => cubit.signUp(
             name: 'test',
@@ -60,7 +66,6 @@ void main() {
             password: 'password1',
             confirmPassword: 'password2',
           ),
-      // Assert: Expect a loading state, then a failure state with the correct message.
       expect:
           () => <AuthState>[
             AuthLoading(),
